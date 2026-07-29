@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:full_stack_project/features/auth/view/pages/login_page.dart';
-import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
+// import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/core/theme/theme.dart';
 
 void main() {
