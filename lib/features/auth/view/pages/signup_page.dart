@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:full_stack_project/features/auth/repository/auth_remote_repository.dart';
+import 'package:full_stack_project/features/auth/view/pages/login_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:full_stack_project/features/auth/view/widgets/custom_field.dart';
 import 'package:full_stack_project/core/theme/app_pallete.dart';
@@ -65,30 +67,39 @@ class _SignupPageState extends State<SignupPage> {
               AuthGradientButton(
                 buttonText: 'Sign Up',
                 onTap: () async {
-                  if (formKey.currentState!.validate()) {
-                    print(nameController.text);
-                    print(emailController.text);
-                    print(passwordController.text);
-                    return;
-                  }
-                  await AuthRemoteRepository().signup(name: nameController.text, email: emailController.text, password: passwordController.text);
-
+                  
+                  final res = await AuthRemoteRepository().signup(name: nameController.text, email: emailController.text, password: passwordController.text);
+                  final val = switch (res) {
+                    Left(value: final l) =>l,
+                    Right(value: final r) =>r.toString(),
+                  };
+                  print(val);
                 },
               ),
               const SizedBox(height: 15),
-              RichText(
-                text: TextSpan(
-                  text: 'Already have account? ',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  children: const [
-                    TextSpan(
-                      text: 'Sign In',
-                      style: TextStyle(
-                        color: Pallete.gradient2,
-                        fontWeight: FontWeight.bold,
-                      ),
+              GestureDetector(
+                onTap:(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context)=>LoginPage(),
                     ),
-                  ],
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Already have account? ',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: const [
+                      TextSpan(
+                        text: 'Sign In',
+                        style: TextStyle(
+                          color: Pallete.gradient2,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

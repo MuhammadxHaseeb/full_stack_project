@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:full_stack_project/features/auth/repository/auth_remote_repository.dart';
+import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:full_stack_project/features/auth/view/widgets/custom_field.dart';
 import 'package:full_stack_project/core/theme/app_pallete.dart';
@@ -55,27 +57,38 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 15),
               AuthGradientButton(
                 buttonText: 'Sign In',
-                onTap: () {
-                  if (formKey.currentState!.validate()) {
-                    print(emailController.text);
-                    print(passwordController.text);
-                  }
+                onTap: () async {
+                  await AuthRemoteRepository().login(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+
                 },
               ),
               const SizedBox(height: 15),
-              RichText(
-                text: TextSpan(
-                  text: "Don't have an account? ",
-                  style: Theme.of(context).textTheme.titleMedium,
-                  children: const [
-                    TextSpan(
-                      text: 'Sign Up',
-                      style: TextStyle(
-                        color: Pallete.gradient2,
-                        fontWeight: FontWeight.bold,
-                      ),
+              GestureDetector(
+                onTap:(){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context)=>SignupPage(),
                     ),
-                  ],
+                  );
+                },
+                child: RichText(
+                  text: TextSpan(
+                    text: "Don't have an account? ",
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: const [
+                      TextSpan(
+                        text: 'Sign Up',
+                        style: TextStyle(
+                          color: Pallete.gradient2,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
