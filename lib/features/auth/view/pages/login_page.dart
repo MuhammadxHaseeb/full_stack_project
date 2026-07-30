@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:full_stack_project/features/auth/repository/auth_remote_repository.dart';
 import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
@@ -58,10 +59,17 @@ class _LoginPageState extends State<LoginPage> {
               AuthGradientButton(
                 buttonText: 'Sign In',
                 onTap: () async {
-                  await AuthRemoteRepository().login(
+                  final res = await AuthRemoteRepository().login(
                     email: emailController.text,
                     password: passwordController.text,
                   );
+
+                  final val = switch(res){
+                    Left(value: final l) => l,
+                    Right(value: final r) => r,
+                    
+                  };
+                  print(val);
 
                 },
               ),

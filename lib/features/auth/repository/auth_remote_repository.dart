@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:full_stack_project/core/constants/server_constant.dart';
 import 'package:full_stack_project/features/auth/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -31,7 +32,6 @@ import 'package:full_stack_project/core/failure/failure.dart';
 //    since the Either return value now carries this info to the caller
 
 class AuthRemoteRepository {
-  final String baseUrl = 'http://192.168.18.19:8000';
 
   Future<Either<AppFailure,UserModel>> signup({
     required String name,
@@ -40,7 +40,7 @@ class AuthRemoteRepository {
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/signup'),
+        Uri.parse('${ServerConstant.serverURL}/auth/signup'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -64,13 +64,13 @@ class AuthRemoteRepository {
     }
   }
 
-  Future<void> login({
+  Future<Either<AppFailure, UserModel>> login({
     required String email,
     required String password,
   }) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/auth/login'),
+        Uri.parse('${ServerConstant.serverURL}/auth/login'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -80,10 +80,16 @@ class AuthRemoteRepository {
         }),
       );
 
-      print("Status: ${response.statusCode}");
-      print("Body: ${response.body}");
+      final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if(response.statusCode != 200){
+        return Left(AppFailure(resBodyMap['detail']));
+      }
+      
+      return Right(UserModel.fromMap(resBodyMap));
+
     } catch (e) {
-      print("Exception: $e");
+      return Left(AppFailure(e.toString()));
     }
   }
 }
