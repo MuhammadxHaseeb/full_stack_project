@@ -35,4 +35,25 @@ class AuthViewmodel extends _$AuthViewmodel {
       };
       
   }
+
+  Future<void> loginUser({
+    required String email,
+    required String password,
+  }) async {
+
+    if (state.isLoading) return;
+
+    state = const AsyncValue.loading();
+
+    final res = await _authRemoteRepository.login(
+      email: email,
+      password: password,
+      );
+      
+      state = switch (res) {
+        Left(value: final l) =>AsyncValue.error(l.message, StackTrace.current),
+        Right(value: final r) =>AsyncValue.data(r),
+      };
+      
+  }
 }

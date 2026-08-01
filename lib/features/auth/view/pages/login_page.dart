@@ -1,19 +1,22 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:full_stack_project/core/widgets/loader.dart';
 import 'package:full_stack_project/features/auth/repository/auth_remote_repository.dart';
 import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:full_stack_project/features/auth/view/widgets/custom_field.dart';
 import 'package:full_stack_project/core/theme/app_pallete.dart';
+import 'package:full_stack_project/features/auth/viewmodel/auth_viewmodel.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -27,9 +30,45 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
+
+    ref.listen(
+      authViewmodelProvider,
+      (_,next){
+        next?.when(
+          data:(data){
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Account Created Successfully. Please Login In!'),
+                ),
+            );
+            // // TODO: Navigate to home page
+            // Navigator.push(
+            //   context, 
+            //   MaterialPageRoute(
+            //     builder: (context) => const LoginPage(),),);
+          },
+          error: (error, st) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                 SnackBar(
+                  content: Text(error.toString()),
+                ),
+            );
+          },
+          loading: () {
+          },
+          );
+      });
+
+
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
+      body: isLoading ? const Loader() :
+      Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: formKey,

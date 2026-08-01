@@ -30,7 +30,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    // final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
+    final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
     
     ref.listen(
       authViewmodelProvider,
@@ -59,7 +59,6 @@ class _SignupPageState extends ConsumerState<SignupPage> {
             );
           },
           loading: () {
-            return const Loader();
           },
           );
       });
@@ -67,7 +66,7 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     return Scaffold(
       appBar: AppBar(),
       body: 
-      // isLoading ? const Loader() :
+      isLoading ? const Loader() :
        Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
