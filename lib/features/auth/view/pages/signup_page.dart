@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:full_stack_project/core/widgets/loader.dart';
 import 'package:full_stack_project/features/auth/view/pages/login_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:full_stack_project/features/auth/view/widgets/custom_field.dart';
@@ -29,11 +30,45 @@ class _SignupPageState extends ConsumerState<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    final val = ref.watch(authViewmodelProvider);
+    // final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
     
+    ref.listen(
+      authViewmodelProvider,
+      (_,next){
+        next?.when(
+          data:(data){
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                  content: Text('Account Created Successfully. Please Login In!'),
+                ),
+            );
+            Navigator.push(
+              context, 
+              MaterialPageRoute(
+                builder: (context) => const LoginPage(),),);
+          },
+          error: (error, st) {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                 SnackBar(
+                  content: Text(error.toString()),
+                ),
+            );
+          },
+          loading: () {
+            return const Loader();
+          },
+          );
+      });
+
     return Scaffold(
       appBar: AppBar(),
-      body: Padding(
+      body: 
+      // isLoading ? const Loader() :
+       Padding(
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: formKey,
