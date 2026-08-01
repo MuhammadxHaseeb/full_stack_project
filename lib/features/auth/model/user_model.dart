@@ -11,7 +11,7 @@ class UserModel {
     required this.email,
     required this.id,
   });
-
+    
   UserModel copyWith({
     String? name,
     String? email,
