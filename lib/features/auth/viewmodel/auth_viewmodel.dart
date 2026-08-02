@@ -3,13 +3,55 @@ import 'package:full_stack_project/features/auth/repository/auth_remote_reposito
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:full_stack_project/features/auth/model/user_model.dart';
 
+// STEP-BY-STEP GUIDE: wiring a repository method into a Riverpod ViewModel
+// (pattern: signUpUser / loginUser)
+//
+// 1. Method signature:
+//    Future<void> yourMethodName({ required <params> }) async { }
+//    - Return type is always Future<void> — the STATE carries the result,
+//      not the return value.
+//
+// 2. Guard against duplicate calls while one is already in flight:
+//    if (state.isLoading) return;
+//
+// 3. Set state to loading BEFORE calling the repository:
+//    state = const AsyncValue.loading();
+//    - This is what flips isLoading to true in the UI.
+//
+// 4. Call the repository method and store the Either result:
+//    final res = await _yourRepository.yourMethod(...);
+//    - Repository method MUST return Either<AppFailure, T>
+//      (if it doesn't yet, fix the repository first — see repository guide)
+//
+// 5. Convert the Either into AsyncValue using pattern matching:
+//    state = switch (res) {
+//      Left(value: final l) => AsyncValue.error(l.message, StackTrace.current),
+//      Right(value: final r) => AsyncValue.data(r),
+//    };
+//
+// 6. Done. The UI reacts via ref.listen(yourProvider, (_, next) {
+//      next?.when(data: ..., error: ..., loading: ...);
+//    });
+//    - data    -> success (e.g. show snackbar, navigate)
+//    - error   -> failure (e.g. show error snackbar)
+//    - loading -> no-op (UI already shows a Loader via ref.watch)
+//
+// CHECKLIST BEFORE WIRING A NEW FEATURE:
+// [ ] Repository method returns Either<AppFailure, T>?
+// [ ] ViewModel's AsyncValue<T> type matches repository's Right type?
+// [ ] build() sets a sensible initial state (usually AsyncValue.data(null))?
+// [ ] UI has ref.watch(...) for loading state + ref.listen(...) for data/error?z
+
+
 part 'auth_viewmodel.g.dart';
 
 @riverpod
 class AuthViewmodel extends _$AuthViewmodel {
-  final AuthRemoteRepository _authRemoteRepository = AuthRemoteRepository();
+  late AuthRemoteRepository _authRemoteRepository;
+
   @override
   AsyncValue<UserModel?> build() {
+    _authRemoteRepository = ref.watch(authRemoteRepositoryProvider);
     return const AsyncValue.data(null);
   }
 

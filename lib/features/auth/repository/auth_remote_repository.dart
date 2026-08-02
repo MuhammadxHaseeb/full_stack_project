@@ -4,6 +4,7 @@ import 'package:full_stack_project/features/auth/model/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:full_stack_project/core/failure/failure.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 // STEP-BY-STEP GUIDE: implementing login() like signup()
 //
@@ -30,6 +31,14 @@ import 'package:full_stack_project/core/failure/failure.dart';
 //
 // 9. Remove the print() debug statements — no longer needed
 //    since the Either return value now carries this info to the caller
+
+part 'auth_remote_repository.g.dart';
+
+@riverpod
+AuthRemoteRepository authRemoteRepository(AuthRemoteRepositoryRef ref){
+  return AuthRemoteRepository();
+}
+
 
 class AuthRemoteRepository {
 
