@@ -3,10 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/core/theme/theme.dart';
 import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
+import 'package:full_stack_project/features/auth/viewmodel/auth_viewmodel.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  final container = ProviderContainer();
+  await container.read(authViewmodelProvider.notifier).initSharedPreferences();
   runApp(
-    ProviderScope(
+    UncontrolledProviderScope(
+      container: container,
       child: const MyApp(),
       ),
     );

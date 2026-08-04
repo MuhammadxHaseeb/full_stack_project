@@ -2,6 +2,7 @@ from fastapi import HTTPException
 import uuid
 import bcrypt
 from fastapi import APIRouter
+import jwt
 
 # import schema class
 from pydantic_schemas.user_create import UserCreate
@@ -52,4 +53,7 @@ def login_user(user: UserLogin, db: Session=Depends(get_db)):
     if not is_match:
         raise HTTPException(400,'Incorrect Password')
     
-    return user_db
+
+    token = jwt.encode({'id': user_db.id},'password_key')
+
+    return {'token': token, 'user': user_db}
