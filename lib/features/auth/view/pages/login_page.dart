@@ -1,13 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:full_stack_project/core/widgets/loader.dart';
-import 'package:full_stack_project/features/auth/repository/auth_remote_repository.dart';
 import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
 import 'package:full_stack_project/features/auth/view/widgets/custom_field.dart';
 import 'package:full_stack_project/core/theme/app_pallete.dart';
 import 'package:full_stack_project/features/auth/viewmodel/auth_viewmodel.dart';
+import 'package:full_stack_project/features/home/home_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -30,7 +29,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(authViewmodelProvider)?.isLoading == true;
+    final isLoading = ref.watch(authViewmodelProvider.select((val) => val?.isLoading == true));
 
     ref.listen(
       authViewmodelProvider,
@@ -41,14 +40,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 const SnackBar(
-                  content: Text('Account Created Successfully. Please Login In!'),
+                  content: Text('Logged in Successfully!'),
                 ),
             );
-            // // TODO: Navigate to home page
-            // Navigator.push(
-            //   context, 
-            //   MaterialPageRoute(
-            //     builder: (context) => const LoginPage(),),);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+              (route) => false,
+            );
           },
           error: (error, st) {
             ScaffoldMessenger.of(context)
@@ -98,18 +99,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               AuthGradientButton(
                 buttonText: 'Sign In',
                 onTap: () async {
-                  final res = await AuthRemoteRepository().login(
-                    email: emailController.text,
-                    password: passwordController.text,
-                  );
-
-                  final val = switch(res){
-                    Left(value: final l) => l,
-                    Right(value: final r) => r,
-                    
-                  };
-                  print(val);
-
+                  if (formKey.currentState!.validate()) {
+                    await ref
+                        .read(authViewmodelProvider.notifier)
+                        .loginUser(email: emailController.text, password: passwordController.text);
+                  } 
+                  else {
+                     ScaffoldMessenger.of(context)
+                      ..hideCurrentSnackBar()
+                      ..showSnackBar(
+                        const SnackBar(content: Text('Missing fields')),
+                      );
+                  }
                 },
               ),
               const SizedBox(height: 15),
