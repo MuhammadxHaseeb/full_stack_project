@@ -5,7 +5,8 @@ import 'package:full_stack_project/core/providers/current_user_notifier.dart';
 import 'package:full_stack_project/core/theme/theme.dart';
 import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/features/auth/viewmodel/auth_viewmodel.dart';
-import 'package:full_stack_project/features/home/home_page.dart';
+import 'package:full_stack_project/features/home/view/pages/home_page.dart';
+import 'package:full_stack_project/features/home/view/pages/upload_song_page.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +32,7 @@ class MyApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Music App',
       theme: AppTheme.darkThemeMode,
-      home: currentUser == null ? const SignupPage(): const HomePage(),
+      home: currentUser == null ? const SignupPage(): const UploadSongPage(),
     );
   }
 }

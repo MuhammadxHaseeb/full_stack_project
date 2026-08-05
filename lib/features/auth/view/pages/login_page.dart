@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:full_stack_project/core/widgets/loader.dart';
 import 'package:full_stack_project/features/auth/view/pages/signup_page.dart';
 import 'package:full_stack_project/features/auth/view/widgets/auth_gradient_button.dart';
-import 'package:full_stack_project/features/auth/view/widgets/custom_field.dart';
+import 'package:full_stack_project/core/widgets/custom_field.dart';
 import 'package:full_stack_project/core/theme/app_pallete.dart';
 import 'package:full_stack_project/features/auth/viewmodel/auth_viewmodel.dart';
-import 'package:full_stack_project/features/home/home_page.dart';
+import 'package:full_stack_project/features/home/view/pages/home_page.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
