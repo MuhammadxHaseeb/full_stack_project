@@ -7,6 +7,7 @@ import 'package:full_stack_project/core/theme/app_pallete.dart';
 import 'package:full_stack_project/core/utils.dart';
 import 'package:full_stack_project/core/widgets/custom_field.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:full_stack_project/features/home/widegts/audio_wave.dart';
 
 class UploadSongPage extends ConsumerStatefulWidget {
   const UploadSongPage({super.key});
@@ -27,7 +28,7 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
     final pickedAudio = await pickAudio();
     if(pickedAudio != null) {
       setState((){
-        selectedImage = pickedAudio;
+        selectedAudio = pickedAudio;
       });
     }
   }
@@ -100,12 +101,16 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
                     ),
                   ),
                 ),
+                
                 const SizedBox(height: 20),
+
+                selectedAudio != null ? AudioWave(path: selectedAudio!.path):
                 CustomField(
                   hintText: 'Pick a Song',
                   controller: null,
                   obscureText: false,
                   readOnly: true,
+                  onTap: selectAudio,
                 ),
                 const SizedBox(height: 20),
                 CustomField(
@@ -118,7 +123,6 @@ class _UploadSongPageState extends ConsumerState<UploadSongPage> {
                   hintText: 'Song Name',
                   controller: songNameController,
                   obscureText: false,
-                  onTap: pickAudio,
                 ),
                 const SizedBox(height: 20),
                 ColorPicker(
